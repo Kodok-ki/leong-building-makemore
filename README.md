@@ -1,9 +1,11 @@
 # leong-building-makemore See https://github.com/RigidSeine/leong-building-makemore
 ## A Recap of the makemore Multilayer Perceptrons (MLP) (Following makemore_rnn)
+
 ### 1. Importing the libraries
   - Torch
   - Torch.nn.functional #For importing the loss function (cross entropy)
   - Matplotlib.pyplot #for making figures
+
 ### 2. Creating the dataset
   - Makemore uses a list of names and uses individual letters of the alphabet as the predicted output of the neural net.
   - To make things easier, the alphabet plus an “end-character” (in this case a full-stop) encoded as numbers (1-27)
