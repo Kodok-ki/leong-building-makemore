@@ -1,0 +1,2 @@
+Run [python -m jupyter-lab] in cmd.
+If failed, try installing use [pip install jupyterlab]
