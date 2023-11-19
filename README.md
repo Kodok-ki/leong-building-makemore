@@ -1,4 +1,4 @@
-# leong-building-makemore
+# leong-building-makemore See https://github.com/RigidSeine/leong-building-makemore
 ## A Recap of the makemore Multilayer Perceptrons (MLP) (Following makemore_rnn)
 ### 1. Importing the libraries
   - Torch
