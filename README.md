@@ -16,6 +16,7 @@
   - E is the first letter of the name so we construct a context window of [0,0,0] aka [...] and append that to our input data/features and we append 5 (since E is encoded as 5) into our output data/labels.
   - Then we slide our context window along so that it becomes [0,0, 5]
   - Then we repeat this: the ‘a’ at the end of Emma has context window: [5, 13, 13] and output ‘a’. However, the last letter is actually the ‘end-character’ (‘.’) so we use 5 context windows for ‘E’, ‘m’, ‘m’, ‘a’, ‘.’ Eventually, our neural net learns to establish probabilities for when these characters appear (and in the order that they do).
+  - The shape of our dataset then becomes ```number of letters across all names + number of words x block size```. The number of words is added to the first dimension because all words need to have an end-character added to the end of it (so that the neural network learns when a name finishes!)
   - Then we divide our dataset into the training set (80%), dev set and test/validation set.
 ### 3. Embedding our inputs
   -  Following the paper - A Neural Probabilistic Language Model 2003 Bengio et al., we create a matrix of random numbers that allows us to embed our input into vectors.
@@ -33,3 +34,15 @@ Number of characters X number of dimensions
    Input Layer -> Embedding Layer -> Linear layer -> Batch Normalisation Layer -> Tanh layer  -> Output Layer
 - The Tanh layer introduces non-linearity to our neural network - this is important because without the non-linearity (and only linearity) our neural network becomes a fancy trendline i.e. it’s only capable of predicting linear relationships. Therefore the non-linearity allows for our neural network to learn non-linear relationships between the input data and the expected output. Tanh(x) is the hyperbolic tan function - it’s convenient because it returns a value between -1 and 1 (inclusive); -1 for x <= -𝛑 and 1 for x >= 𝛑.
 ### 5. Parameters
+- Given the structure of our neural, we need parameters to model them physically (i.e. in maths and code).
+- Parameters are the trainable components of a neural net, that start with seemingly random values and are gradually adjusted (during training) with calculus to generalise well to unseen data. For this example of makemore we’re training the weights and bias on real names so that network can generate outputs that are “name-like”.
+- The primary kind of parameters are:
+  - Weights: Mathematically, they’re the coefficients for our inputs in ```f(w,x) = wx + b```, w stands for weight here. Conceptually, they represent the strength of a connection between neurons within a neural net. A high weight means a neuron contributes greatly towards shaping the result produced by the next neuron.
+  - Bias: Mathematically, the b in ```f(w,x) = wx + b```. They’re an additional offset for helping shape a model.
+  - For makemore we have a couple more parameters
+- The first layer after our Input Layer is the Embedding Layer, C which is initialised as a matrix with dimensions (```vocab_size x n_embd```) or (27 possible outputs x 10 embedding dimensions) of random integers.
+- The next layer is a Linear Layer of neurons that perform the ```f(w,x) = wx + b``` activation function.
+- For this we have W1, a matrix of weights, typically as a matrix with dimensions (```n_embd * block size x n_hidden```). N_hidden is the number of neurons we’ve decided to put in our hidden layer. Our neural net is also fully connected (which means each neuron in a prior layer will affect each neuron in the subsequent layer), which requires matrix multiplication between the layers we represent with matrices. The n_embd dimension of our Embedding doesn’t match up with our Linear Layer’s n_embd * block size dimension right now, but it will match up because our training data already has the block size defined within its shape.
+- The other part of the Linear Layer is the bias, b1 which is a simple column vector of dimension n_hidden. Matrix addition requires two matrices to be of the same order (A: n x m, B: n x m) but the bias gets added to the wx by using PyTorch’s built-in broadcasting. See https://stackoverflow.com/questions/51371070/how-does-pytorch-broadcasting-work for diagrams for what the broadcasting looks like.
+- Batch normalisation layer comprises primarily low dimensional parameters that are applied to W1. For this we use bngain and bnbias, both of which have dimensions ```1 x n_hidden```. This means they make use of PyTorch’s broadcasting. More info on this in the batch normalisation section.
+- Kaiming/He initialisation
