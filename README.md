@@ -55,7 +55,7 @@ Number of characters X number of dimensions
 - The update then is a process of using the calculated gradients to update the parameters (weights and bias) to minimise the loss in the next forward pass. Remember, a zero gradient indicates not only no rate of change but also an extremum - i.e. we’re looking to find a minimum loss by finding weights and biases that give us the lowest gradients.
 - We then repeat this process for many iterations until we get to a relatively low loss value (more on what ‘relatively low’ looks like later). The low loss value gives us an idea of how well the neural net (model) can generalise to new inputs when sampled from - too low of a loss can mean the model is overfitting and will return the training data more frequently.
 - Now we need to talk about batch training. To optimise the learning process and computation, splitting the dataset into small sets called batches is recommended. In our case, the batch size is 32 data points. Rather than using the full dataset, each batch is used to increment the parameters (during backpass
-- Following batch training is **batch normalisation**.
+- Following batch training is **batch normalisation**. [FORMULA TO BE ADDED]
 
 ### 7. Training
 - This model was trained over 200,000 iterations using a training batch size of 32 data points.
@@ -65,7 +65,7 @@ Number of characters X number of dimensions
   1. Since the neural net is implemented using pytorch matrices, the embedded input matrix was squished down from a batch_size X block_size X n_embed tensor to a batch_size X block_size*n_embed matrix. pytorch.Tensor.view() is a nice and efficient way of reshaping tensors.
   1. The preactivation to the first hidden layer is created (funnily enough with a linear activation). The bias is removed since it holds no value due to the bias already existing in the batch normalisation layer that follows.
   1. Since batch normalisation uses the batch’s mean and standard deviation (variation, actually) to normalise the layer these values need to be calculated.
-The preactivation is then batch normalised using the formula[1].
+The preactivation is then batch normalised using the formula <sup>[1]</sup>.
   1. As a side step, the mean and standard deviation of the whole training set is kept track of in order to do normalisation during validation at the end of training. This is done using a torch.no_grad() block since the mean and standard deviation don’t need to be updated during the backpass.
   1. Next is a non-linear layer where a simple tanh() is applied to the layer.
   1. Then the logits are created using the 2nd set of weights and biases - logits being the raw non-normalised probability values that represent the output.
