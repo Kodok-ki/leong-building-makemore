@@ -60,7 +60,15 @@
 \tag{1}
 BN(x) = \gamma * \frac{x-\mu}{\sqrt{\sigma^2+\epsilon}} + \beta
 ```
-- The nsfnsdlfn
+- Where 
+  - BN(x) is batch normalised output
+  - $`\gamma`$ (Gamma) is the gain (aka scale)
+  - $`x`$ is the input
+  - $`\mu`$ (Mu) is mean of the batch for each neuron
+  - $`\sigma`$ (Sigma) is the variance of the batch for each neuron
+  - $`\epsilon`$ (Epsilon) is the standard very small number - in this case it prevents a division by zero.
+  - $`\beta`$ (Beta) is the bias (aka shift)
+
 ### 7. Training
 - This model was trained over 200,000 iterations using a training batch size of 32 data points.
 - Each iteration followed these steps:
@@ -78,3 +86,25 @@ The preactivation is then batch normalised using the formula <sup>[1]</sup>.
   1. Next is the updating step, where we use a decaying model to update our parameters based on how many iterations have been made. After the halfway point of training, we slow down the learning rate by a tenth.
 
 ### 8. Validation
+ - After the training is done, the neural net is typically tested on the validation (aka dev) set and test sets.
+ - Validation is a test for how well the model can generalise and perform on new, unseen data.
+ - For this one we only needed to test on the validation set since the main goal was more around learning how the training of this neural net worked.
+ - But the validation is just done by doing a forward pass over the entire validation set using your newly trained parameters and producing a loss.
+ - Then you repeat for the training set and produce another loss value.
+ - If the training went to plan, then the two loss values should be in the same ballpark.
+ - This also applies to the test set.
+ - What does it mean if the loss values aren’t in the same ballpark? Well assuming all the preprocessing steps were the same, and the data isn’t vastly different, it can mean two things:
+  - A low loss value from the training set and a high loss value from the other two sets means the model is overfitting to the training set. This means the model fails to generalise to unseen data.
+  - Conversely, a high loss value from the training set and a low loss value from the other two sets means the model is underfitting. This generally means the model isn’t really good at finding patterns.
+
+### 9. Sampling From the Model
+ - This is where we actually use the model.
+ - Similar to the training, where we passed in context windows containing our letters within a name and embedded them into high dimension vectors, we do the same for sampling.
+ - To produce a single word, we start with a blank container for the word and context window of all ellipses [...], i.e. the initial state of the word.
+ - Then we do a forward pass, passing in the context window and produce a probability distribution for which letter should come next in the word. For [...], this means the probability for a letter to be first in a name.
+ - Then with our probability distribution, we do a multinomial sample, i.e. our neural net picks a letter.
+ - Then we add the letter to our container.
+ - Then we repeat this until we land upon our end-character, a ‘.’ (a full stop).
+ - Since our letters are encoded as numbers, we can just do a quick conversion and decode them back into letters.
+### Bonus:
+ - The same model was recreated afterwards but by imitating PyTorch classes so the setup resembles something more along the lines of what a pro would use.
